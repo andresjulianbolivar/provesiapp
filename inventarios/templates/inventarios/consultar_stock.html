@@ -1,38 +1,102 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Consultar disponibilidad por código de barras/QR</h2>
-<form method="post">
-    {% csrf_token %}
-    <label>Código de barras/QR:</label>
-    <input type="text" name="codigo" required placeholder="Escanea o ingresa el código">
-    <button type="submit">Consultar</button>
-</form>
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">Consultar disponibilidad por código de barras/QR</h2>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Buscar Producto</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="codigo">Código de barras/QR:</label>
+                        <input type="text" class="form-control" name="codigo" id="codigo" required placeholder="Escanea o ingresa el código">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Consultar
+                    </button>
+                </form>
+            </div>
+        </div>
 
-{% if producto %}
-    <h3>Stock para {{ producto.nombre }}</h3>
-    <ul>
-        {% for item in stock %}
-            <li>Bodega: {{ item.bodega }} - Cantidad: {{ item.cantidad }}</li>
-        {% endfor %}
-    </ul>
-{% elif stock is not none %}
-    <p>Producto no encontrado.</p>
-{% endif %}
+        {% if producto %}
+            <div class="alert alert-success">
+                <h4>Stock para {{ producto.nombre }}</h4>
+                <p><strong>Código:</strong> {{ producto.codigo }}</p>
+                <p><strong>Color:</strong> {{ producto.color }}</p>
+                <p><strong>Talla:</strong> {{ producto.talla }}</p>
+                <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Stock disponible</h5>
+                </div>
+                <div class="card-body">
+                    {% if stock %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Bodega</th>
+                                        <th>Cantidad</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in stock %}
+                                    <tr>
+                                        <td>{{ item.bodega }}</td>
+                                        <td><span class="badge badge-primary">{{ item.cantidad }}</span></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <strong>Sin stock:</strong> Este producto no tiene stock disponible en ninguna bodega.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% elif stock is not none %}
+            <div class="alert alert-danger">
+                <strong>Producto no encontrado.</strong> Verifique el código ingresado.
+            </div>
+        {% endif %}
 
-<hr>
-<h2>Listado de Inventarios</h2>
-<table border="1">
-    <tr>
-        <th>Producto</th>
-        <th>Bodega</th>
-        <th>Cantidad</th>
-    </tr>
-    {% for inventario in inventarios %}
-    <tr>
-        <td>{{ inventario.producto }}</td>
-        <td>{{ inventario.bodega }}</td>
-        <td>{{ inventario.cantidad }}</td>
-    </tr>
-    {% endfor %}
-</table>
+        <hr>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Listado completo de Inventarios</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Producto</th>
+                                <th>Bodega</th>
+                                <th>Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for inventario in inventarios %}
+                            <tr>
+                                <td>{{ inventario.producto }}</td>
+                                <td>{{ inventario.bodega }}</td>
+                                <td><span class="badge badge-info">{{ inventario.cantidad }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
