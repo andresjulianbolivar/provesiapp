@@ -2,16 +2,14 @@ from django.core.management.base import BaseCommand
 from productos.models import Producto
 from bodegas.models import Bodega
 from inventarios.models import Inventario
-# correr la base de datos con:
-#python manage.py poblar_asr
 
 class Command(BaseCommand):
     help = 'Pobla la base de datos con datos de prueba para la ASR de consulta de stock por código de producto.'
 
     def handle(self, *args, **options):
-        # Crear bodegas
-        bodega1, _ = Bodega.objects.get_or_create(nombre="Bodega Central", defaults={"direccion": "Calle 1 # 23-45"})
-        bodega2, _ = Bodega.objects.get_or_create(nombre="Bodega Norte", defaults={"direccion": "Carrera 7 # 89-10"})
+        # Crear bodegas usando los campos existentes (ciudad y direccion)
+        bodega1, _ = Bodega.objects.get_or_create(ciudad="Bogotá", direccion="Calle 1 # 23-45")
+        bodega2, _ = Bodega.objects.get_or_create(ciudad="Medellín", direccion="Carrera 7 # 89-10")
 
         # Crear productos
         producto1, _ = Producto.objects.get_or_create(codigo=1001, defaults={
