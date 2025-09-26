@@ -23,6 +23,7 @@ def inventario_producto(request):
 def consultar_stock(request):
     stock = None
     producto = None
+    inventarios = Inventario.objects.all()
     if request.method == 'POST':
         codigo = request.POST.get('codigo')
         try:
@@ -30,4 +31,8 @@ def consultar_stock(request):
             stock = Inventario.objects.filter(producto=producto)
         except Producto.DoesNotExist:
             stock = []
-    return render(request, 'inventarios/consultar_stock.html', {'producto': producto, 'stock': stock})
+    return render(request, 'inventarios/consultar_stock.html', {
+        'producto': producto,
+        'stock': stock,
+        'inventarios': inventarios
+    })

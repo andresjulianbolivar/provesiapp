@@ -1,20 +1,38 @@
 {% extends 'base.html' %}
 {% block content %}
+<h2>Consultar disponibilidad por código de barras/QR</h2>
 <form method="post">
     {% csrf_token %}
-    <label>Código del producto:</label>
-    <input type="text" name="codigo" required>
+    <label>Código de barras/QR:</label>
+    <input type="text" name="codigo" required placeholder="Escanea o ingresa el código">
     <button type="submit">Consultar</button>
 </form>
 
 {% if producto %}
-    <h2>Stock para {{ producto.nombre }}</h2>
+    <h3>Stock para {{ producto.nombre }}</h3>
     <ul>
         {% for item in stock %}
-            <li>Bodega: {{ item.bodega.nombre }} - Cantidad: {{ item.cantidad }}</li>
+            <li>Bodega: {{ item.bodega }} - Cantidad: {{ item.cantidad }}</li>
         {% endfor %}
     </ul>
 {% elif stock is not none %}
     <p>Producto no encontrado.</p>
 {% endif %}
+
+<hr>
+<h2>Listado de Inventarios</h2>
+<table border="1">
+    <tr>
+        <th>Producto</th>
+        <th>Bodega</th>
+        <th>Cantidad</th>
+    </tr>
+    {% for inventario in inventarios %}
+    <tr>
+        <td>{{ inventario.producto }}</td>
+        <td>{{ inventario.bodega }}</td>
+        <td>{{ inventario.cantidad }}</td>
+    </tr>
+    {% endfor %}
+</table>
 {% endblock %}
