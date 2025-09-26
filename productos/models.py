@@ -10,4 +10,4 @@ class Producto(models.Model):
     bodegas = models.ManyToManyField(Bodega, through='inventarios.Inventario')
     
     def __str__(self):
-        return '{} {} {} {} {}'.format(self.nombre,self.color,self.talla,self.descripcion)
+        return '{} {} {} {} {}'.format(self.codigo,self.nombre,self.color,self.talla,self.descripcion)

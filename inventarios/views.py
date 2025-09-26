@@ -1,12 +1,22 @@
 from django.shortcuts import render
 from productos.models import Producto
 from .models import Inventario
-from .logic.inventario_logic import get_inventario
+from .logic.inventario_logic import get_inventario, get_producto
 
 def inventario_list(request):
     inventario = get_inventario()
     context = {
         'inventario_list': inventario
+    }
+    return render(request, 'Inventario/inventarios.html', context)
+
+def inventario_producto(request):
+    codigo = request.GET.get("codigo")
+    inventario = []
+    if codigo:
+        inventario = get_producto(int(codigo))
+    context = {
+        'inventario_producto':inventario
     }
     return render(request, 'Inventario/inventarios.html', context)
 
