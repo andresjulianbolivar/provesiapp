@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <label>Código del producto:</label>
+    <input type="text" name="codigo" required>
+    <button type="submit">Consultar</button>
+</form>
+
+{% if producto %}
+    <h2>Stock para {{ producto.nombre }}</h2>
+    <ul>
+        {% for item in stock %}
+            <li>Bodega: {{ item.bodega.nombre }} - Cantidad: {{ item.cantidad }}</li>
+        {% endfor %}
+    </ul>
+{% elif stock is not none %}
+    <p>Producto no encontrado.</p>
+{% endif %}
+{% endblock %}
