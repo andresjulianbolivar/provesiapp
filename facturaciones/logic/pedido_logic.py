@@ -4,7 +4,7 @@ from ..models import Pedido, Cantidad
 
 def create_pedido(productos_cantidades, vip):
     pedido = Pedido.objects.create(
-        fecha=datetime.date.today(),
+        fecha=datetime.today().strftime('%Y-%m-%d'),
         vip=vip
     )
     

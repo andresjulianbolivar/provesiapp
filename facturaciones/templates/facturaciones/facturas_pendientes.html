@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Facturas Pendientes</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Total</th>
+            <th>Fecha Pedido</th>
+            <th>VIP</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for factura in facturas %}
+        <tr>
+            <td>{{ factura.id }}</td>
+            <td>{{ factura.rubro_total }}</td>
+            <td>{{ factura.pedido.fecha }}</td>
+            <td>{% if factura.pedido.vip %}Sí{% else %}No{% endif %}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No hay facturas pendientes.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,7 +1,7 @@
 import datetime
 from productos.models import Producto
 from ..models import Factura, Pedido
-import pedido_logic as pedido_logic
+from . import pedido_logic as pedido_logic
 
 def get_factura(id):
     queryset = Factura.objects.filter(id=id)
@@ -21,6 +21,6 @@ def create_factura(productos_cantidades, vip=False):
         unidades= producto["unidades"]
         rubro_total+= producto_obj.precio * unidades
 
-    factura= Factura.objects.create(total=rubro_total, orden_produccion=orden_produccion, pedido=pedido)
+    factura= Factura.objects.create(rubro_total=rubro_total, orden_produccion=orden_produccion, pedido=pedido)
 
     return factura
