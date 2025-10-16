@@ -8,6 +8,7 @@ class Producto(models.Model):
     talla = models.CharField(max_length=50)
     descripcion = models.TextField()
     bodegas = models.ManyToManyField(Bodega, through='inventarios.Inventario')
-    
+    precio = models.FloatField(default=0)
+
     def __str__(self):
-        return '{} {} {} {} {}'.format(self.codigo,self.nombre,self.color,self.talla,self.descripcion)
+        return '{} {} {} {} {}'.format(self.codigo, self.nombre, self.color, self.talla, self.descripcion)
