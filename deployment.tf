@@ -272,7 +272,7 @@ resource "aws_instance" "inventario" {
               sudo pip3 install -r requirements.txt --break-system-packages
 
   tags = merge(local.common_tags, {
-    Name = "${var.project_prefix}-monitoring"
+    Name = "${var.project_prefix}-inventario"
     Role = "inventario"
   })
 
