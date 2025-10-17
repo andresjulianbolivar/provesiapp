@@ -270,6 +270,7 @@ resource "aws_instance" "inventario" {
               git checkout ${local.branch}
               sudo pip3 install --upgrade pip --break-system-packages
               sudo pip3 install -r requirements.txt --break-system-packages
+              EOT
 
   tags = merge(local.common_tags, {
     Name = "${var.project_prefix}-inventario"
