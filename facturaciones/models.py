@@ -9,13 +9,14 @@ class Factura(models.Model):
         return f"Factura #{self.id} - Total: {self.rubro_total}"
 
 
+
+    
 class Pedido(models.Model):
     fecha = models.DateField()
     vip = models.BooleanField()
-    #factura = models.OneToOneField(Factura, on_delete=models.CASCADE, related_name="pedido")
-
+    estado = models.CharField(max_length=50, default="Verificado")
     def __str__(self):
-        return f"Pedido #{self.id} - {self.fecha}"
+        return f"Pedido #{self.id} - {self.fecha} - VIP: {self.vip} - Estado: {self.estado}"
 
 
 class Cantidad(models.Model):
@@ -25,3 +26,5 @@ class Cantidad(models.Model):
 
     def __str__(self):
         return f"{self.unidades}x {self.producto}"
+    
+

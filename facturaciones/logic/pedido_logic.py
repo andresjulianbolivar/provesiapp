@@ -2,10 +2,11 @@ from datetime import datetime
 from ..models import Pedido, Cantidad
 
 
-def create_pedido(productos_cantidades, vip):
+def create_pedido(productos_cantidades, vip, estado="Verificado"):
     pedido = Pedido.objects.create(
         fecha=datetime.today().strftime('%Y-%m-%d'),
-        vip=vip
+        vip=vip,
+        estado=estado
     )
     
     for item in productos_cantidades:
@@ -15,4 +16,5 @@ def create_pedido(productos_cantidades, vip):
             unidades=item['unidades']
         )
         new_cantidad.save()
+
     return pedido

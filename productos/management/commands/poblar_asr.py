@@ -38,7 +38,6 @@ class Command(BaseCommand):
         Inventario.objects.get_or_create(producto=producto1, bodega=bodega2, defaults={"cantidad": 20})
         Inventario.objects.get_or_create(producto=producto2, bodega=bodega1, defaults={"cantidad": 15})
         Inventario.objects.get_or_create(producto=producto2, bodega=bodega2, defaults={"cantidad": 30})
-        Inventario.objects.get_or_create(producto=producto3, bodega=bodega1, defaults={"cantidad": 25})
-        Inventario.objects.get_or_create(producto=producto3, bodega=bodega2, defaults={"cantidad": 10})
+        Inventario.objects.get_or_create(producto=producto3, bodega=bodega2, defaults={"cantidad": 30})
 
         self.stdout.write(self.style.SUCCESS('Datos de prueba para la ASR poblados correctamente.'))

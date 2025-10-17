@@ -1,32 +1,31 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block content %}
-<h2>Crear Factura Automática</h2>
-<form method="post">
+<div class="container mt-5">
+  <h2 class="mb-4">Crear Factura</h2>
+
+  {% if mensaje %}
+    <div class="alert alert-info">{{ mensaje }}</div>
+  {% endif %}
+
+  <form method="POST" class="p-4 border rounded bg-light shadow-sm">
     {% csrf_token %}
-    <table class="table table-bordered" style="width:100%;">
-        <thead>
-            <tr>
-                <th style="text-align:left;">Producto</th>
-                <th style="text-align:right;">Cantidad</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for producto in productos %}
-        <tr>
-            <td style="text-align:left;">{{ producto.nombre }} ({{ producto.codigo }})</td>
-            <td style="text-align:right;">
-                <input type="number" name="cantidad_{{ producto.codigo }}" min="0" value="0" style="width:60px;">
-            </td>
-        </tr>
+    <div class="mb-3">
+      <label for="pedido_id" class="form-label">Selecciona un pedido verificado:</label>
+      <select name="pedido_id" id="pedido_id" class="form-select" required>
+        <option value="">-- Selecciona un pedido --</option>
+        {% for pedido in pedidos_verificados %}
+          <option value="{{ pedido.id }}">
+            Pedido #{{ pedido.id }} - {{ pedido.fecha }} - VIP: {{ pedido.vip }}
+          </option>
+        {% empty %}
+          <option disabled>No hay pedidos verificados disponibles</option>
         {% endfor %}
-        </tbody>
-    </table>
-    <div class="form-group">
-        <label><input type="checkbox" name="vip" value="true"> Pedido VIP</label>
+      </select>
     </div>
-    <button type="submit" class="btn btn-primary">Crear Factura</button>
-</form>
-{% if mensaje %}
-    <p style="color:green;">{{ mensaje }}</p>
-{% endif %}
+
+    <button type="submit" class="btn btn-primary">Crear factura</button>
+  </form>
+</div>
 {% endblock %}

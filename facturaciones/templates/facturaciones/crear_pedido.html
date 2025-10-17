@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Crear Pedido</h2>
+<form method="post">
+    {% csrf_token %}
+    <table class="table table-bordered" style="width:100%;">
+        <thead>
+            <tr>
+                <th style="text-align:left;">Producto</th>
+                <th style="text-align:right;">Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for producto in productos %}
+        <tr>
+            <td style="text-align:left;">{{ producto.nombre }} ({{ producto.codigo }})</td>
+            <td style="text-align:right;">
+                <input type="number" name="cantidad_{{ producto.codigo }}" min="0" value="0" style="width:60px;">
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="form-group">
+        <label><input type="checkbox" name="vip" value="true"> Pedido VIP</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Crear Pedido</button>
+</form>
+{% if mensaje %}
+    <p style="color:green;">{{ mensaje }}</p>
+{% endif %}
+{% endblock %}

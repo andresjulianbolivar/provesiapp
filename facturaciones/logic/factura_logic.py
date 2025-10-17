@@ -11,16 +11,15 @@ def get_facturas():
     queryset = Factura.objects.all()
     return queryset
 
-def create_factura(productos_cantidades, vip=False):
+def create_factura(pedido):
     rubro_total = 0.0
     orden_produccion = False
-    pedido=pedido_logic.create_pedido(productos_cantidades, vip)
 
-    for producto in productos_cantidades:
-        producto_obj = Producto.objects.get(codigo=producto['codigo'])
-        unidades= producto["unidades"]
-        rubro_total+= producto_obj.precio * unidades
+    for cantidad in pedido.cantidades.all():
+        producto_obj = Producto.objects.get(codigo=cantidad.producto.codigo)
+        unidades = cantidad.unidades
+        rubro_total += producto_obj.precio * unidades
 
-    factura= Factura.objects.create(rubro_total=rubro_total, orden_produccion=orden_produccion, pedido=pedido)
+    factura = Factura.objects.create(rubro_total=rubro_total, orden_produccion=orden_produccion, pedido=pedido)
 
     return factura

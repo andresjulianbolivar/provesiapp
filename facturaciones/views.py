@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 
 from facturaciones.logic.factura_logic import create_factura
+from facturaciones.logic.pedido_logic import create_pedido
 from productos.models import Producto
 
 # Create your views here.
@@ -24,7 +25,7 @@ def generar_factura(request):
             }, status=400)
     return JsonResponse({"error": "Método no permitido"}, status=405)
 
-def crear_factura(request):
+def crear_pedido(request):
     productos = Producto.objects.all()
     mensaje = ""
     if request.method == "POST":
@@ -34,18 +35,49 @@ def crear_factura(request):
             if cantidad > 0:
                 productos_cantidades.append({"codigo": producto.codigo, "unidades": cantidad})
         if productos_cantidades:
-            create_factura(productos_cantidades)
-            mensaje = "¡Factura creada exitosamente!"
+            vipp=request.POST.get("vip", False)
+            create_pedido(productos_cantidades, vip=vipp)
+            mensaje = "¡Pedido creado exitosamente!"
         else:
             mensaje = "Debes ingresar al menos una cantidad."
-    return render(request, "facturaciones/crear_factura.html", {
+    return render(request, "facturaciones/crear_pedido.html", {
         "productos": productos,
         "mensaje": mensaje
     })
     
 from django.shortcuts import render
-from .models import Factura
+from .models import Factura, Pedido
 
 def facturas_pendientes(request):
     facturas = Factura.objects.all() 
     return render(request, "facturaciones/facturas_pendientes.html", {"facturas": facturas})
+
+def crear_factura(request):
+    mensaje = ""
+    pedidos_verificados = Pedido.objects.filter(estado="Verificado")
+
+    if request.method == "POST":
+        pedido_id = request.POST.get("pedido_id")
+
+        if not pedido_id:
+            mensaje = "Debes seleccionar un pedido válido."
+        else:
+            try:
+                pedido = Pedido.objects.get(id=pedido_id)
+                # Crear factura (si tu lógica ya lo maneja, simplemente llámala)
+                factura = create_factura(pedido)
+                
+                # Opcional: cambiar estado del pedido
+                pedido.estado = "Empacado x despachar"
+                pedido.save()
+
+                mensaje = f"Factura #{factura.id} creada para el pedido #{pedido.id}."
+            except Pedido.DoesNotExist:
+                mensaje = "El pedido seleccionado no existe."
+            except Exception as e:
+                mensaje = f"Ocurrió un error al crear la factura: {e}"
+
+    return render(request, "facturaciones/crear_factura.html", {
+        "pedidos_verificados": pedidos_verificados,
+        "mensaje": mensaje
+    })
