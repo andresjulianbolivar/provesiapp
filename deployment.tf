@@ -34,31 +34,61 @@ data "aws_ami" "ubuntu" {
     values = ["hvm"]
   }
 }
-
 resource "aws_security_group" "traffic_django" {
   name        = "${var.project_prefix}-traffic-django"
   description = "Allow traffic on 8080"
-  ingress { from_port = 8080 to_port = 8080 protocol = "tcp" cidr_blocks = ["0.0.0.0/0"] }
+
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_security_group" "traffic_cb" {
   name        = "${var.project_prefix}-traffic-cb"
   description = "Allow Kong on 8000-8001"
-  ingress { from_port = 8000 to_port = 8001 protocol = "tcp" cidr_blocks = ["0.0.0.0/0"] }
+
+  ingress {
+    from_port   = 8000
+    to_port     = 8001
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_security_group" "traffic_db" {
   name        = "${var.project_prefix}-traffic-db"
   description = "Allow PostgreSQL access"
-  ingress { from_port = 5432 to_port = 5432 protocol = "tcp" cidr_blocks = ["0.0.0.0/0"] }
+
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_security_group" "traffic_ssh" {
   name        = "${var.project_prefix}-traffic-ssh"
   description = "Allow SSH access"
-  ingress { from_port = 22 to_port = 22 protocol = "tcp" cidr_blocks = ["0.0.0.0/0"] }
-  egress  { from_port = 0 to_port = 0 protocol = "-1" cidr_blocks = ["0.0.0.0/0"] }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
+
 
 resource "aws_instance" "kong" {
   ami                    = data.aws_ami.ubuntu.id
