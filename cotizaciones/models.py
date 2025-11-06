@@ -6,6 +6,7 @@ class Cotizacion(models.Model):
     transportadora = models.CharField(max_length=50)
     precio = models.FloatField(null=True, blank=True, default=None)
     tiempo = models.FloatField(null=True, blank=True, default=None)
+    peso = models.FloatField(null=True, blank=True, default=None)
 
     def __str__(self):
-        return '%s %s' % (self.pedido, self.transportadora,self.precio,self.tiempo)
+        return '%s %s' % (self.pedido, self.transportadora,self.precio,self.tiempo, self.peso)

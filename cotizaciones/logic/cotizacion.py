@@ -14,7 +14,8 @@ def crear_cotizacion(pedido_s):
                 pedido = pedido_s,
                 transportadora = item.get("transportadora"),
                 precio = item.get("precio"),
-                tiempo = item.get("tiempo")
+                tiempo = item.get("tiempo"),
+                peso = item.get("peso")
             )
             cotizaciones.append(cotizacion)
         return cotizaciones
