@@ -78,6 +78,5 @@ def crear_factura(request):
                 mensaje = f"Ocurrió un error al crear la factura: {e}"
 
     return render(request, "facturaciones/crear_factura.html", {
-        "pedidos_verificados": pedidos_verificados,
         "mensaje": mensaje
     })

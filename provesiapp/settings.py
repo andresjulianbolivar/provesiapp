@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'productos',
     'bodegas',
     'inventarios',
-    'facturaciones'
+    'facturaciones',
+    'cotizaciones',
 ]
 
 MIDDLEWARE = [

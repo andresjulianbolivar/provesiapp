@@ -1,0 +1,52 @@
+_format_version: "2.1"
+
+services:
+  #- host: monitoring_upstream
+  #  name: monitoring_service
+  #  protocol: http
+  #  routes:
+  #    
+  #    - name: monitoring
+  #      paths:
+  #        - /
+        #strip_path: false
+
+  - host: facturas_upstream
+    name: facturas_service
+    protocol: http
+    routes:
+      
+      - name: facturas
+        paths:
+          - /crear-pedido
+          - /crear-factura
+          - /facturas-pendientes
+        strip_path: false
+    
+upstreams:
+  - name: facturas_upstream
+    targets:
+      - target: 172.31.27.72:8080
+        weight: 100
+      - target: 172.31.30.4:8080
+        weight: 100
+      - target: 172.31.19.55:8080
+        weight: 100
+    #healthchecks:
+    #  threshold: 0
+    #  active:
+    #    http_path: /health/
+    #    timeout: 0
+    #    healthy:
+    #      successes: 0
+    #      interval: 0
+    #    unhealthy:
+    #      tcp_failures: 0
+    #      interval: 0
+
+  #- name: monitoring_upstream
+  #  targets:
+  #    - target: <ip-privada-monitoring-app>:8080
+  #      weight: 100
+
+

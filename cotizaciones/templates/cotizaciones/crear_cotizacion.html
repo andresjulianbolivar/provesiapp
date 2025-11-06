@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Crear cotización</h2>
+
+  {% if mensaje %}
+    <div class="alert alert-info">{{ mensaje }}</div>
+  {% endif %}
+
+  <form method="POST" class="p-4 border rounded bg-light shadow-sm">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="pedido_id" class="form-label">Ingresa el ID del pedido verificado:</label>
+      <input 
+        type="number" 
+        name="pedido_id" 
+        id="pedido_id" 
+        class="form-control" 
+        placeholder="Ejemplo: 123"
+        required
+        min="1"
+      >
+      <div class="form-text">
+        Asegúrate de ingresar un ID de pedido que ya esté en estado Empacado x despachar.
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Crear cotización</button>
+  </form>
+</div>
+{% endblock %}
