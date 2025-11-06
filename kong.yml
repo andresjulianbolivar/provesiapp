@@ -1,6 +1,9 @@
 _format_version: "3.0"
 _transform: true
 
+# ===============================
+# 🧱 SERVICIO DE COTIZACIÓN
+# ===============================
 services:
   - name: cotizacion-service
     host: cotizacion.internal
@@ -12,6 +15,22 @@ services:
           - /cotizacion
         strip_path: true
 
+# ===============================
+# 🌐 SERVICIO GENERAL (DJANGO)
+# ===============================
+  - name: general-service
+    host: general.internal
+    protocol: http
+    port: 8080
+    routes:
+      - name: general-route
+        paths:
+          - /general
+        strip_path: true
+
+# ===============================
+# 🧩 UPSTREAMS (Balanceadores)
+# ===============================
 upstreams:
   - name: cotizacion.internal
     targets:
@@ -20,9 +39,6 @@ upstreams:
       - target: 172.31.16.244:8080
       - target: 172.31.30.9:8080
     healthchecks:
-      passive:
-        unhealthy:
-          http_failures: 5
       active:
         type: http
         http_path: /actuator/health
@@ -32,4 +48,27 @@ upstreams:
         unhealthy:
           interval: 10
           http_failures: 3
+      passive:
+        unhealthy:
+          http_failures: 5
 
+  - name: general.internal
+    targets:
+      - target: 44.223.53.99:8080  # IP pública del Django (general)
+    healthchecks:
+      active:
+        type: http
+        http_path: /
+        healthy:
+          interval: 10
+          successes: 2
+        unhealthy:
+          interval: 10
+          http_failures: 3
+
+# ===============================
+# 🗄️ BASE DE DATOS (referencia interna)
+# ===============================
+  - name: database.internal
+    targets:
+      - target: 172.31.17.92:5432
