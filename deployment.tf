@@ -203,3 +203,9 @@ output "database_private_ip" {
 output "kong_public_ip" {
   value = aws_instance.kong.public_ip
 }
+
+output "cotizacion_private_ips" {
+  description = "Private IP addresses for the cotizacion service instances"
+  value       = { for id, instance in aws_instance.cotizacion : id => instance.private_ip }
+}
+
