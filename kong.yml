@@ -1,52 +1,29 @@
 _format_version: "2.1"
 
 services:
-  #- host: monitoring_upstream
-  #  name: monitoring_service
-  #  protocol: http
-  #  routes:
-  #    
-  #    - name: monitoring
-  #      paths:
-  #        - /
-        #strip_path: false
-
-  - host: facturas_upstream
-    name: facturas_service
+  - name: provesi_cotizacion_service
+    host: provesi_cotizacion_upstream
     protocol: http
     routes:
-      
-      - name: facturas
+      - name: provesi_cotizacion_routes
         paths:
-          - /crear-pedido
-          - /crear-factura
-          - /facturas-pendientes
+          - /cotizacion
+          - /cotizaciones
+          - /crear-cotizacion
+          - /consultar-cotizacion
         strip_path: false
-    
+
 upstreams:
-  - name: facturas_upstream
+  - name: provesi_cotizacion_upstream
+    algorithm: round-robin
     targets:
-      - target: 172.31.27.72:8080
+      - target: 172.31.10.11:8080   # provesi-cotizacion-a (IP privada)
         weight: 100
-      - target: 172.31.30.4:8080
+      - target: 172.31.15.34:8080   # provesi-cotizacion-b
         weight: 100
-      - target: 172.31.19.55:8080
+      - target: 172.31.22.47:8080   # provesi-cotizacion-c
         weight: 100
-    #healthchecks:
-    #  threshold: 0
-    #  active:
-    #    http_path: /health/
-    #    timeout: 0
-    #    healthy:
-    #      successes: 0
-    #      interval: 0
-    #    unhealthy:
-    #      tcp_failures: 0
-    #      interval: 0
+      - target: 172.31.30.62:8080   # provesi-cotizacion-d
+        weight: 100
 
-  #- name: monitoring_upstream
-  #  targets:
-  #    - target: <ip-privada-monitoring-app>:8080
-  #      weight: 100
-
-
+# La instancia general NO se balancea, se accede directamente a su IP pública.
