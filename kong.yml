@@ -1,29 +1,35 @@
-_format_version: "2.1"
+_format_version: "3.0"
+_transform: true
 
 services:
-  - name: provesi_cotizacion_service
-    host: provesi_cotizacion_upstream
+  - name: cotizacion-service
+    host: cotizacion.internal
     protocol: http
+    port: 8080
     routes:
-      - name: provesi_cotizacion_routes
+      - name: cotizacion-route
         paths:
           - /cotizacion
-          - /cotizaciones
-          - /crear-cotizacion
-          - /consultar-cotizacion
-        strip_path: false
+        strip_path: true
 
 upstreams:
-  - name: provesi_cotizacion_upstream
-    algorithm: round-robin
+  - name: cotizacion.internal
     targets:
-      - target: 172.31.10.11:8080   # provesi-cotizacion-a (IP privada)
-        weight: 100
-      - target: 172.31.15.34:8080   # provesi-cotizacion-b
-        weight: 100
-      - target: 172.31.22.47:8080   # provesi-cotizacion-c
-        weight: 100
-      - target: 172.31.30.62:8080   # provesi-cotizacion-d
-        weight: 100
+      - target: 172.31.30.143:8080
+      - target: 172.31.29.58:8080
+      - target: 172.31.16.244:8080
+      - target: 172.31.30.9:8080
+    healthchecks:
+      passive:
+        unhealthy:
+          http_failures: 5
+      active:
+        type: http
+        http_path: /actuator/health
+        healthy:
+          interval: 10
+          successes: 2
+        unhealthy:
+          interval: 10
+          http_failures: 3
 
-# La instancia general NO se balancea, se accede directamente a su IP pública.
