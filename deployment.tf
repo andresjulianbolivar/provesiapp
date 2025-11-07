@@ -223,6 +223,9 @@ resource "aws_instance" "cotizaciones" {
                 git clone ${local.repository}
                 git clone https://github.com/andresjulianbolivar/envios.git
               fi
+              if [ ! -d envios ]; then
+                git clone https://github.com/andresjulianbolivar/envios.git
+              fi
 
               cd provesiapp
               git fetch origin ${local.branch}
@@ -230,8 +233,9 @@ resource "aws_instance" "cotizaciones" {
               sudo pip3 install --upgrade pip --break-system-packages
               sudo pip3 install -r requirements.txt --break-system-packages
 
-              cd envios
-              git pull
+              cd ../envios
+              git fetch origin main
+              git checkout main
               sudo pip3 install --upgrade pip --break-system-packages
               sudo pip3 install -r requirements.txt --break-system-packages
               EOT
