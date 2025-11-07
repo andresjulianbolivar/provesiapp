@@ -221,11 +221,17 @@ resource "aws_instance" "cotizaciones" {
 
               if [ ! -d provesiapp ]; then
                 git clone ${local.repository}
+                git clone https://github.com/andresjulianbolivar/envios.git
               fi
 
               cd provesiapp
               git fetch origin ${local.branch}
               git checkout ${local.branch}
+              sudo pip3 install --upgrade pip --break-system-packages
+              sudo pip3 install -r requirements.txt --break-system-packages
+
+              cd envios
+              git pull
               sudo pip3 install --upgrade pip --break-system-packages
               sudo pip3 install -r requirements.txt --break-system-packages
               EOT
