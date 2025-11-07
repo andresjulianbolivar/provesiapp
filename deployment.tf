@@ -15,9 +15,9 @@
 #    - cbd-kong
 #    - cbd-db (PostgreSQL instalado y configurado)
 #    - cbd-monitoring (Monitoring app instalada y migraciones aplicadas)
-#    - cbd-alarms-a (Monitoring app instalada)
-#    - cbd-alarms-b (Monitoring app instalada)
-#    - cbd-alarms-c (Monitoring app instalada)
+#    - cbd-cotizaciones-a (Monitoring app instalada)
+#    - cbd-cotizaciones-b (Monitoring app instalada)
+#    - cbd-cotizaciones-c (Monitoring app instalada)
 # ******************************************************************
 
 # Variable. Define la región de AWS donde se desplegará la infraestructura.
@@ -201,7 +201,7 @@ resource "aws_instance" "database" {
 # Se crean tres instancias (a, b, c) usando un bucle.
 # Cada instancia incluye un script de creación para instalar la aplicación de Monitoring.
 resource "aws_instance" "cotizaciones" {
-  for_each = toset(["a", "b", "c"])
+  for_each = toset(["a", "b", "c", "d"])
 
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
@@ -241,7 +241,7 @@ resource "aws_instance" "cotizaciones" {
               EOT
 
   tags = merge(local.common_tags, {
-    Name = "${var.project_prefix}-alarms-${each.key}"
+    Name = "${var.project_prefix}-cotizaciones-${each.key}"
     Role = "cotizaciones"
   })
 
