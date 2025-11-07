@@ -12,7 +12,8 @@ services:
     routes:
       - name: cotizacion-route
         paths:
-          - /cotizacion
+          - /cotizaciones
+          - /crear-cotizacion
         strip_path: true
 
 # ===============================
@@ -24,8 +25,7 @@ services:
     port: 8080
     routes:
       - name: general-route
-        paths:
-          - /general
+        
         strip_path: true
 
 # ===============================
@@ -34,10 +34,10 @@ services:
 upstreams:
   - name: cotizacion.internal
     targets:
-      - target: 172.31.30.143:8080
-      - target: 172.31.29.58:8080
-      - target: 172.31.16.244:8080
-      - target: 172.31.30.9:8080
+      - target: 172.31.28.101:8080
+      - target: 172.31.23.138:8080
+      - target: 172.31.28.211:8080
+      - target: 172.31.29.115:8080
     healthchecks:
       active:
         type: http
@@ -54,7 +54,7 @@ upstreams:
 
   - name: general.internal
     targets:
-      - target: 44.223.53.99:8080  # IP pública del Django (general)
+      - target: 54.242.141.10:8080  # IP pública del Django (general)
     healthchecks:
       active:
         type: http
@@ -71,4 +71,4 @@ upstreams:
 # ===============================
   - name: database.internal
     targets:
-      - target: 172.31.17.92:5432
+      - target: 172.31.24.59:5432
