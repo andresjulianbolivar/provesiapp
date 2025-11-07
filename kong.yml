@@ -1,43 +1,45 @@
-_format_version: "3.0"
+_format_version: "2.1"
 _transform: true
 
 # ===============================
 # 🧱 SERVICIO DE COTIZACIÓN
 # ===============================
 services:
-  - name: cotizacion-service
+  - name: cotizacion_service
     host: cotizacion.internal
     protocol: http
     port: 8080
     routes:
-      - name: cotizacion-route
+      - name: cotizacion_route
         paths:
           - /cotizaciones
           - /crear-cotizacion
         strip_path: true
 
-# ===============================
-# 🌐 SERVICIO GENERAL (DJANGO)
-# ===============================
-  - name: general-service
+  - name: general_service
     host: general.internal
     protocol: http
     port: 8080
     routes:
-      - name: general-route
-        
+      - name: general_route
+        paths:
+          - /
         strip_path: true
 
 # ===============================
 # 🧩 UPSTREAMS (Balanceadores)
 # ===============================
 upstreams:
-  - name: cotizacion.internal
+  - name: cotizacion_upstream
     targets:
-      - target: 172.31.28.101:8080
-      - target: 172.31.23.138:8080
-      - target: 172.31.28.211:8080
-      - target: 172.31.29.115:8080
+      - target: 172.31.31.90:8080
+        weight: 100
+      - target: 172.31.20.119:8080
+        weight: 100
+      - target: 172.31.16.54:8080
+        weight: 100
+      - target: 172.31.30.224:8080
+        weight: 100
     healthchecks:
       active:
         type: http
@@ -52,9 +54,10 @@ upstreams:
         unhealthy:
           http_failures: 5
 
-  - name: general.internal
+  - name: general_upstream
     targets:
-      - target: 54.242.141.10:8080  # IP pública del Django (general)
+      - target: 172.31.20.152:8080
+        weight: 100
     healthchecks:
       active:
         type: http
@@ -66,9 +69,7 @@ upstreams:
           interval: 10
           http_failures: 3
 
-# ===============================
-# 🗄️ BASE DE DATOS (referencia interna)
-# ===============================
-  - name: database.internal
+  - name: database_upstream
     targets:
-      - target: 172.31.24.59:5432
+      - target: 172.31.28.140:5432
+        weight: 100
