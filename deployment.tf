@@ -297,25 +297,25 @@ output "kong_public_ip" {
 }
 
 # Salida. Muestra las direcciones IP públicas de las instancias de la aplicación de alarmas.
-output "facturas_public_ips" {
+output "cotizaciones_public_ips" {
   description = "Public IP addresses for the cotizaciones service instances"
   value       = { for id, instance in aws_instance.cotizaciones : id => instance.public_ip }
 }
 
 # Salida. Muestra la dirección IP pública de la instancia de la aplicación de Monitoring.
-output "inventario_public_ip" {
+output "general_public_ip" {
   description = "Public IP address for the general service application"
   value       = { for id, instance in aws_instance.general : id => instance.public_ip }
 }
 
 # Salida. Muestra las direcciones IP privadas de las instancias de la aplicación de alarmas.
-output "facturas_private_ips" {
+output "cotizaciones_private_ips" {
   description = "Private IP addresses for the cotizaciones service instances"
   value       = { for id, instance in aws_instance.cotizaciones : id => instance.private_ip }
 }
 
 # Salida. Muestra la dirección IP privada de la instancia de la aplicación de Monitoring.
-output "inventario_private_ip" {
+output "general_private_ip" {
   description = "Private IP address for the general service application"
   value       = { for id, instance in aws_instance.general : id => instance.public_ip }
 }
