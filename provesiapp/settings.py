@@ -84,7 +84,7 @@ DATABASES = {
         'NAME': 'provesidb',
         'USER': 'abolivarc',
         'PASSWORD': 'Anjuboca200510',
-        'HOST': 'localhost',
+        'HOST': '172.31.28.140',
         'PORT': '5432',
     }
 }
