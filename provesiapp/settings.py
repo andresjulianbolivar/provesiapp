@@ -90,7 +90,7 @@ DATABASES = {
         'NAME': 'provesidb',
         'USER': 'abolivarc',
         'PASSWORD': 'Anjuboca200510',
-        'HOST': '3.90.163.11',
+        'HOST': '13.222.154.44',
         'PORT': '5432',
     }
 }
@@ -145,7 +145,7 @@ STATICFILES_DIRS = (
 
 LOGIN_URL = "/login/auth0" 
 LOGIN_REDIRECT_URL = "/" 
-LOGOUT_REDIRECT_URL = "https://dev-pvgf2um0c5bys1m4.us.auth0.com/v2/logout?returnTo=http%3A%2F%2F184.72.79.74:8080" 
+LOGOUT_REDIRECT_URL = "https://dev-pvgf2um0c5bys1m4.us.auth0.com/v2/logout?returnTo=http%3A%2F%2F54.91.75.46:8080" 
 SOCIAL_AUTH_TRAILING_SLASH = False # Remove end slash from routes 
 SOCIAL_AUTH_AUTH0_DOMAIN = 'dev-pvgf2um0c5bys1m4.us.auth0.com' 
 SOCIAL_AUTH_AUTH0_KEY = 'Sa1rYXKDmTgHk1dpIhyqvzn8LvaazCI4' 
