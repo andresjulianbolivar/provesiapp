@@ -11,7 +11,7 @@ class Auth0(BaseOAuth2):
 
     name = 'auth0'
 
-    SCOPE_SEPARATOR = ' '
+    SCOPE_SEPARATOR = ''
 
     ACCESS_TOKEN_METHOD = 'POST'
 
@@ -44,7 +44,6 @@ class Auth0(BaseOAuth2):
 
 
     def get_user_details(self, response):
-
         url = 'https://' + self.setting('DOMAIN') + '/userinfo'
 
         headers = {'authorization': 'Bearer ' + response['access_token']}
@@ -54,7 +53,7 @@ class Auth0(BaseOAuth2):
         userinfo = resp.json()
 
 
-        return {'username': userinfo['nickname'],'first_name': userinfo['name'],'picture': userinfo['picture'],'user_id': userinfo['sub']}
+        return {'username': userinfo.get('email', userinfo.get('nickname')),'first_name': userinfo.get('name'),'picture': userinfo.get('picture'),'user_id': userinfo.get('sub')}
 
 def getRole(request):
 

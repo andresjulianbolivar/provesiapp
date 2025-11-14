@@ -56,6 +56,27 @@
             </ul>
 
           </div>
+
+            <div class="form-inline my-2 my-lg-0">
+                {% if user.is_authenticated %}
+                <form action="{% url 'logout' %}" method="post">
+                    <ul class="nav navbar-nav navbar-right">
+
+                        {% csrf_token %}
+                        <li><a style="font-size:120%" class="nav-link">{{ user.user_id }}</a></li>
+                        <li><button style="font-size:120%; padding-right:20px" class="btn btn-link" type="submit">Log
+                                out</button></li>
+                    </ul>
+
+                </form>
+                {% else %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a style="font-size:120%; padding-right:20px" class="navbar-link" href="/login/auth0">Login</a>
+                    </li>
+                </ul>
+                {% endif %}
+            </div>
+
         </nav>
 
 

@@ -7,6 +7,7 @@ from facturaciones.logic.pedido_logic import create_pedido
 from productos.models import Producto
 from provesiapp.auth0backend import getRole
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def generar_factura(request):
@@ -27,6 +28,7 @@ def generar_factura(request):
             }, status=400)
     return JsonResponse({"error": "Método no permitido"}, status=405)
 
+@login_required
 def crear_pedido(request):
     role = getRole(request)
     if role == "Gerencia WMS":
