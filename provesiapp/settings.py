@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-o9u-_=yxlpao867f)#bnqc8!vh!xheo4c930n!no$f$g-@n$i@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', 
+                 '54.227.34.214']
+CSRF_TRUSTED_ORIGINS = [
+    'http://54.227.34.214:8000',
+]
 
 
 # Application definition
@@ -85,7 +89,7 @@ DATABASES = {
         'NAME': 'provesidb',
         'USER': 'abolivarc',
         'PASSWORD': 'Anjuboca200510',
-        'HOST': 'localhost',
+        'HOST': '172.31.28.140',
         'PORT': '5432',
     }
 }

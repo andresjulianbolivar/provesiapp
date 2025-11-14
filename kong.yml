@@ -1,52 +1,75 @@
 _format_version: "2.1"
+_transform: true
 
+# ===============================
+# 🧱 SERVICIO DE COTIZACIÓN
+# ===============================
 services:
-  #- host: monitoring_upstream
-  #  name: monitoring_service
-  #  protocol: http
-  #  routes:
-  #    
-  #    - name: monitoring
-  #      paths:
-  #        - /
-        #strip_path: false
-
-  - host: facturas_upstream
-    name: facturas_service
+  - name: cotizacion_service
+    host: cotizacion.internal
     protocol: http
+    port: 8080
     routes:
-      
-      - name: facturas
+      - name: cotizacion_route
         paths:
-          - /crear-pedido
-          - /crear-factura
-          - /facturas-pendientes
-        strip_path: false
-    
+          - /cotizaciones
+          - /crear-cotizacion
+        strip_path: true
+
+  - name: general_service
+    host: general.internal
+    protocol: http
+    port: 8080
+    routes:
+      - name: general_route
+        paths:
+          - /
+        strip_path: true
+
+# ===============================
+# 🧩 UPSTREAMS (Balanceadores)
+# ===============================
 upstreams:
-  - name: facturas_upstream
+  - name: cotizacion_upstream
     targets:
-      - target: 172.31.27.72:8080
+      - target: 172.31.31.90:8080
         weight: 100
-      - target: 172.31.30.4:8080
+      - target: 172.31.20.119:8080
         weight: 100
-      - target: 172.31.19.55:8080
+      - target: 172.31.16.54:8080
         weight: 100
-    #healthchecks:
-    #  threshold: 0
-    #  active:
-    #    http_path: /health/
-    #    timeout: 0
-    #    healthy:
-    #      successes: 0
-    #      interval: 0
-    #    unhealthy:
-    #      tcp_failures: 0
-    #      interval: 0
+      - target: 172.31.30.224:8080
+        weight: 100
+    healthchecks:
+      active:
+        type: http
+        http_path: /actuator/health
+        healthy:
+          interval: 10
+          successes: 2
+        unhealthy:
+          interval: 10
+          http_failures: 3
+      passive:
+        unhealthy:
+          http_failures: 5
 
-  #- name: monitoring_upstream
-  #  targets:
-  #    - target: <ip-privada-monitoring-app>:8080
-  #      weight: 100
+  - name: general_upstream
+    targets:
+      - target: 172.31.20.152:8080
+        weight: 100
+    healthchecks:
+      active:
+        type: http
+        http_path: /
+        healthy:
+          interval: 10
+          successes: 2
+        unhealthy:
+          interval: 10
+          http_failures: 3
 
-
+  - name: database_upstream
+    targets:
+      - target: 172.31.28.140:5432
+        weight: 100

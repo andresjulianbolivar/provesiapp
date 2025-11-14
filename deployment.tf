@@ -15,9 +15,9 @@
 #    - cbd-kong
 #    - cbd-db (PostgreSQL instalado y configurado)
 #    - cbd-monitoring (Monitoring app instalada y migraciones aplicadas)
-#    - cbd-alarms-a (Monitoring app instalada)
-#    - cbd-alarms-b (Monitoring app instalada)
-#    - cbd-alarms-c (Monitoring app instalada)
+#    - cbd-cotizaciones-a (Monitoring app instalada)
+#    - cbd-cotizaciones-b (Monitoring app instalada)
+#    - cbd-cotizaciones-c (Monitoring app instalada)
 # ******************************************************************
 
 # Variable. Define la región de AWS donde se desplegará la infraestructura.
@@ -200,8 +200,8 @@ resource "aws_instance" "database" {
 # Recurso. Define las instancias EC2 para el servicio de alarmas de la aplicación de Monitoring.
 # Se crean tres instancias (a, b, c) usando un bucle.
 # Cada instancia incluye un script de creación para instalar la aplicación de Monitoring.
-resource "aws_instance" "facturas" {
-  for_each = toset(["a", "b", "c"])
+resource "aws_instance" "cotizaciones" {
+  for_each = toset(["a", "b", "c", "d"])
 
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
@@ -221,6 +221,10 @@ resource "aws_instance" "facturas" {
 
               if [ ! -d provesiapp ]; then
                 git clone ${local.repository}
+                git clone https://github.com/andresjulianbolivar/envios.git
+              fi
+              if [ ! -d envios ]; then
+                git clone https://github.com/andresjulianbolivar/envios.git
               fi
 
               cd provesiapp
@@ -228,11 +232,17 @@ resource "aws_instance" "facturas" {
               git checkout ${local.branch}
               sudo pip3 install --upgrade pip --break-system-packages
               sudo pip3 install -r requirements.txt --break-system-packages
+
+              cd ../envios
+              git fetch origin main
+              git checkout main
+              sudo pip3 install --upgrade pip --break-system-packages
+              sudo pip3 install -r requirements.txt --break-system-packages
               EOT
 
   tags = merge(local.common_tags, {
-    Name = "${var.project_prefix}-alarms-${each.key}"
-    Role = "facturas"
+    Name = "${var.project_prefix}-cotizaciones-${each.key}"
+    Role = "cotizaciones"
   })
 
   
@@ -241,8 +251,8 @@ resource "aws_instance" "facturas" {
 
 # Recurso. Define la instancia EC2 para la aplicación de Monitoring (Django).
 # Esta instancia incluye un script de creación para instalar la aplicación de Monitoring y aplicar las migraciones.
-resource "aws_instance" "inventario" {
-  for_each = toset(["a", "b"])
+resource "aws_instance" "general" {
+  for_each = toset(["a"])
 
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
@@ -273,8 +283,8 @@ resource "aws_instance" "inventario" {
               EOT
 
   tags = merge(local.common_tags, {
-    Name = "${var.project_prefix}-inventario"
-    Role = "inventario"
+    Name = "${var.project_prefix}-general"
+    Role = "general"
   })
 
   depends_on = [aws_instance.database]
@@ -287,27 +297,27 @@ output "kong_public_ip" {
 }
 
 # Salida. Muestra las direcciones IP públicas de las instancias de la aplicación de alarmas.
-output "facturas_public_ips" {
-  description = "Public IP addresses for the facturas service instances"
-  value       = { for id, instance in aws_instance.facturas : id => instance.public_ip }
+output "cotizaciones_public_ips" {
+  description = "Public IP addresses for the cotizaciones service instances"
+  value       = { for id, instance in aws_instance.cotizaciones : id => instance.public_ip }
 }
 
 # Salida. Muestra la dirección IP pública de la instancia de la aplicación de Monitoring.
-output "inventario_public_ip" {
-  description = "Public IP address for the inventario service application"
-  value       = { for id, instance in aws_instance.inventario : id => instance.public_ip }
+output "general_public_ip" {
+  description = "Public IP address for the general service application"
+  value       = { for id, instance in aws_instance.general : id => instance.public_ip }
 }
 
 # Salida. Muestra las direcciones IP privadas de las instancias de la aplicación de alarmas.
-output "facturas_private_ips" {
-  description = "Private IP addresses for the facturas service instances"
-  value       = { for id, instance in aws_instance.facturas : id => instance.private_ip }
+output "cotizaciones_private_ips" {
+  description = "Private IP addresses for the cotizaciones service instances"
+  value       = { for id, instance in aws_instance.cotizaciones : id => instance.private_ip }
 }
 
 # Salida. Muestra la dirección IP privada de la instancia de la aplicación de Monitoring.
-output "inventario_private_ip" {
-  description = "Private IP address for the inventario service application"
-  value       = { for id, instance in aws_instance.inventario : id => instance.public_ip }
+output "general_private_ip" {
+  description = "Private IP address for the general service application"
+  value       = { for id, instance in aws_instance.general : id => instance.public_ip }
 }
 
 # Salida. Muestra la dirección IP privada de la instancia de la base de datos PostgreSQL.
