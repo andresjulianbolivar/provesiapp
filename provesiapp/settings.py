@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'inventarios',
     'facturaciones',
     'cotizaciones',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -136,3 +137,13 @@ MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'static', 'media')
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
 )
+
+LOGIN_URL = "/login/auth0" 
+LOGIN_REDIRECT_URL = "/" 
+LOGOUT_REDIRECT_URL = "https://dev-pvgf2um0c5bys1m4.us.auth0.com/v2/logout?returnTo=http%3A%2F%2F127.0.0.1:8080" 
+SOCIAL_AUTH_TRAILING_SLASH = False # Remove end slash from routes 
+SOCIAL_AUTH_AUTH0_DOMAIN = 'dev-pvgf2um0c5bys1m4.us.auth0.com' 
+SOCIAL_AUTH_AUTH0_KEY = 'Sa1rYXKDmTgHk1dpIhyqvzn8LvaazCI4' 
+SOCIAL_AUTH_AUTH0_SECRET = 'hhmkmqwp1Vr03ZzySmJVElUC30ablDUthpT-g9tk2QiYYkeS-VZ5JZgLSYCsb3C7' 
+SOCIAL_AUTH_AUTH0_SCOPE = [ 'openid', 'profile', 'email', 'role', ] 
+AUTHENTICATION_BACKENDS = { 'provesiapp.auth0backend.Auth0', 'django.contrib.auth.backends.ModelBackend', }

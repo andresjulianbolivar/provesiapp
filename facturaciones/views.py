@@ -5,6 +5,8 @@ from django.shortcuts import render
 from facturaciones.logic.factura_logic import create_factura
 from facturaciones.logic.pedido_logic import create_pedido
 from productos.models import Producto
+from provesiapp.auth0backend import getRole
+from django.http import HttpResponse
 
 # Create your views here.
 def generar_factura(request):
@@ -26,24 +28,28 @@ def generar_factura(request):
     return JsonResponse({"error": "Método no permitido"}, status=405)
 
 def crear_pedido(request):
-    productos = Producto.objects.all()
-    mensaje = ""
-    if request.method == "POST":
-        productos_cantidades = []
-        for producto in productos:
-            cantidad = int(request.POST.get(f"cantidad_{producto.codigo}", 0))
-            if cantidad > 0:
-                productos_cantidades.append({"codigo": producto.codigo, "unidades": cantidad})
-        if productos_cantidades:
-            vipp=request.POST.get("vip", False)
-            create_pedido(productos_cantidades, vip=vipp)
-            mensaje = "¡Pedido creado exitosamente!"
-        else:
-            mensaje = "Debes ingresar al menos una cantidad."
-    return render(request, "facturaciones/crear_pedido.html", {
-        "productos": productos,
-        "mensaje": mensaje
-    })
+    role = getRole(request)
+    if role == "Gerencia WMS":
+        productos = Producto.objects.all()
+        mensaje = ""
+        if request.method == "POST":
+            productos_cantidades = []
+            for producto in productos:
+                cantidad = int(request.POST.get(f"cantidad_{producto.codigo}", 0))
+                if cantidad > 0:
+                    productos_cantidades.append({"codigo": producto.codigo, "unidades": cantidad})
+            if productos_cantidades:
+                vipp=request.POST.get("vip", False)
+                create_pedido(productos_cantidades, vip=vipp)
+                mensaje = "¡Pedido creado exitosamente!"
+            else:
+                mensaje = "Debes ingresar al menos una cantidad."
+        return render(request, "facturaciones/crear_pedido.html", {
+            "productos": productos,
+            "mensaje": mensaje
+        })
+    else:
+        return HttpResponse("Unauthorized User")
     
 from django.shortcuts import render
 from .models import Factura, Pedido

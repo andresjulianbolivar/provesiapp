@@ -23,4 +23,6 @@ urlpatterns = [
     path('', include('inventarios.urls')),
     path('facturaciones/', include('facturaciones.urls')),
     path('', include('cotizaciones.urls')),
+    path(r'', include('django.contrib.auth.urls')),
+    path(r'', include('social_django.urls')),
 ]
