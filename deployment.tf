@@ -41,6 +41,13 @@ variable "instance_type" {
   default     = "t2.nano"
 }
 
+# Variable. Define la URL base del microservicio de pedidos.
+variable "pedidos_ms_base_url" {
+  description = "URL base del microservicio de pedidos"
+  type        = string
+  default     = "http://1.2.3.4:8080" # la IP pública que te dio el otro Terraform
+}
+
 # Proveedor. Define el proveedor de infraestructura (AWS) y la región.
 provider "aws" {
   region = var.region
@@ -264,6 +271,7 @@ resource "aws_instance" "general" {
 
               sudo export DATABASE_HOST=${aws_instance.database.private_ip}
               echo "DATABASE_HOST=${aws_instance.database.private_ip}" | sudo tee -a /etc/environment
+              echo "PEDIDOS_MS_BASE_URL=${var.pedidos_ms_base_url}" | sudo tee -a /etc/environment
 
               sudo apt-get update -y
               sudo apt-get install -y python3-pip git build-essential libpq-dev python3-dev

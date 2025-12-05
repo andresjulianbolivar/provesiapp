@@ -152,3 +152,8 @@ SOCIAL_AUTH_AUTH0_KEY = 'Sa1rYXKDmTgHk1dpIhyqvzn8LvaazCI4'
 SOCIAL_AUTH_AUTH0_SECRET = 'hhmkmqwp1Vr03ZzySmJVElUC30ablDUthpT-g9tk2QiYYkeS-VZ5JZgLSYCsb3C7' 
 SOCIAL_AUTH_AUTH0_SCOPE = [ 'openid', 'profile', 'email', 'role', ] 
 AUTHENTICATION_BACKENDS = { 'provesiapp.auth0backend.Auth0', 'django.contrib.auth.backends.ModelBackend', }
+
+PEDIDOS_MS_BASE_URL = os.getenv(
+    "PEDIDOS_MS_BASE_URL",
+    "http://localhost:8080",  # valor pruebas locales
+)
