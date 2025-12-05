@@ -16,10 +16,10 @@ def generar_factura(request):
             data=json.loads(request.body)
             productos_cantidades=data.get("productos_cantidades", [])
             vip=data.get("vip", False)
-            factura=create_factura(productos_cantidades, vip)
+            factura=create_factura(Pedido(productos_cantidades, vip))
             return JsonResponse({
                 "factura_id": factura.id,
-                "total": factura.total,
+                "total": factura.rubro_total,
                 "pedido_id": factura.pedido.id if factura.pedido else None
             }, status=201)
         except Exception as e:

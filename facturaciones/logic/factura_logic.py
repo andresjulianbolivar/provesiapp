@@ -11,7 +11,7 @@ def get_facturas():
     queryset = Factura.objects.all()
     return queryset
 
-def create_factura(pedido):
+def create_factura(pedido: Pedido):
     rubro_total = 0.0
     orden_produccion = False
 

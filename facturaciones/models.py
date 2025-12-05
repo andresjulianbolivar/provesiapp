@@ -1,6 +1,7 @@
 from django.db import models
 
 class Factura(models.Model):
+    id = models.AutoField(primary_key=True)
     rubro_total = models.FloatField()
     orden_produccion = models.BooleanField()
     pedido=models.OneToOneField('Pedido', on_delete=models.CASCADE, null=True, blank=True, related_name="factura")
@@ -12,9 +13,11 @@ class Factura(models.Model):
 
     
 class Pedido(models.Model):
+    id = models.AutoField(primary_key=True)
     fecha = models.DateField()
     vip = models.BooleanField()
     estado = models.CharField(max_length=50, default="Verificado")
+    cantidades = models.ManyToManyField('productos.Producto', through='Cantidad', related_name="pedidos")
     def __str__(self):
         return f"Pedido #{self.id} - {self.fecha} - VIP: {self.vip} - Estado: {self.estado}"
 
