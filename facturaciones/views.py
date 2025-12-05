@@ -11,7 +11,12 @@ from provesiapp.auth0backend import getRole
 from .models import Factura, Pedido
 from .logic.factura_logic import create_factura as legacy_create_factura
 from .logic.pedido_logic import create_pedido as legacy_create_pedido
-from .logic.ms_client import ms_crear_pedido, ms_crear_factura
+from .logic.ms_client import (    
+    ms_crear_pedido,
+    ms_crear_factura,
+    ms_listar_facturas_pendientes,
+    ms_listar_pedidos_verificados,
+)
 
 
 # --- API legacy (no HTML) - adaptar en el futuro ---
