@@ -54,11 +54,7 @@ def generar_factura(request):
 @login_required
 def crear_pedido(request):
     """
-    Vista HTML legacy de crear pedido.
-
-    Cambios:
-    - Sigue usando Productos + template legacy.
-    - PERO llama al MS de pedidos.
+    Esta vista solo construye el formulario y manda los datos al MS.
     """
     role = getRole(request)
     if role != "Gerencia WMS":
@@ -76,7 +72,6 @@ def crear_pedido(request):
                     {
                         "codigo": producto.codigo,
                         "unidades": cantidad,
-                        # info extra para el MS de pedidos
                         "nombre": producto.nombre,
                         "precio": float(producto.precio),
                     }
@@ -84,17 +79,12 @@ def crear_pedido(request):
 
         if productos_cantidades:
             vipp = bool(request.POST.get("vip", False))
-
-            # Lógica legacy
-            legacy_create_pedido(productos_cantidades, vip=vipp)
-
-            # Llamada microservicio de pedidos
             try:
-                ms_response = ms_crear_pedido(productos_cantidades, vip=vipp)
-                pedido_id_ms = ms_response.get("pedido_id")
-                mensaje = f"¡Pedido creado exitosamente! (MS ID: {pedido_id_ms})"
+                resp = ms_crear_pedido(productos_cantidades, vip=vipp)
+                pedido_id_ms = resp.get("pedido_id")
+                mensaje = f"¡Pedido creado exitosamente en el MS! ID: {pedido_id_ms}"
             except Exception as e:
-                mensaje = f"Pedido local creado, pero falló el MS de pedidos: {e}"
+                mensaje = f"Error llamando al MS de pedidos: {e}"
         else:
             mensaje = "Debes ingresar al menos una cantidad."
 
@@ -108,28 +98,42 @@ def crear_pedido(request):
     )
 
 
+
 def facturas_pendientes(request):
-    """
-    Vista legacy que lista facturas locales.
-    """
-    facturas = Factura.objects.all()
+    try:
+        facturas = ms_listar_facturas_pendientes()
+    except Exception as e:
+        # En caso de falla del MS, mostramos pantalla con error
+        return render(
+            request,
+            "facturaciones/facturas_pendientes.html",
+            {
+                "facturas": [],
+                "error": f"Error consultando el microservicio de pedidos: {e}",
+            },
+        )
+
     return render(
         request,
         "facturaciones/facturas_pendientes.html",
-        {"facturas": facturas},
+        {
+            "facturas": facturas,
+        },
     )
+
 
 
 def crear_factura(request):
     """
-    Vista HTML legacy para crear factura.
-
-    Cambios:
-    - Sigue usando los modelos locales para mostrar pedidos verificados.
-    - También intenta crearla en el MS.
+    se hacen vía microservicio de pedidos.
     """
     mensaje = ""
-    pedidos_verificados = Pedido.objects.filter(estado="Verificado")
+
+    try:
+        pedidos_verificados = ms_listar_pedidos_verificados()
+    except Exception as e:
+        pedidos_verificados = []
+        mensaje = f"Error consultando pedidos verificados en el MS: {e}"
 
     if request.method == "POST":
         pedido_id = request.POST.get("pedido_id")
@@ -138,30 +142,17 @@ def crear_factura(request):
             mensaje = "Debes seleccionar un pedido válido."
         else:
             try:
-                pedido = Pedido.objects.get(id=pedido_id)
-
-                # 1) Lógica legacy local
-                factura = legacy_create_factura(pedido)
-
-                pedido.estado = "Empacado x despachar"
-                pedido.save()
+                # MS para crear la factura
+                resp = ms_crear_factura(int(pedido_id))
+                factura_id = resp.get("factura_id")
+                total = resp.get("total")
 
                 mensaje = (
-                    f"Factura #{factura.id} creada para el pedido #{pedido.id} (local)."
+                    f"Factura #{factura_id} creada en el MS "
+                    f"para el pedido #{pedido_id}. Total: {total}."
                 )
-
-                # Llamada microservicio de pedidos
-                try:
-                    ms_resp = ms_crear_factura(pedido.id)
-                    factura_ms_id = ms_resp.get("factura_id")
-                    mensaje += f" También se creó en el MS (ID factura MS: {factura_ms_id})."
-                except Exception as e:
-                    mensaje += f" Pero falló la creación en el MS de pedidos: {e}"
-
-            except Pedido.DoesNotExist:
-                mensaje = "El pedido seleccionado no existe."
             except Exception as e:
-                mensaje = f"Ocurrió un error al crear la factura: {e}"
+                mensaje = f"Ocurrió un error al crear la factura en el MS: {e}"
 
     return render(
         request,
